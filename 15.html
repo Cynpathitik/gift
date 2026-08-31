@@ -381,9 +381,9 @@
             border-radius: 50%;
             border: 2px solid #d4c8ba;
             flex-shrink: 0;
-            background-image: url('blessing.jpg');
             background-size: cover;
             background-position: center;
+            background-color: #e8e3db;
         }
 
         .reply-item .reply-body {
@@ -572,19 +572,19 @@
         const replyList = document.getElementById('replyList');
 
         let isWhiteout = false;
+        let replyAvatar = 'blessing.jpg';
+        let replyName = '大口进食牛肉盖饭';
 
         // ============================================================
         //  第一步：虚化 2 秒 → 彩虹覆盖 1.5 秒 → "你是谁？" 渐显
         // ============================================================
         setTimeout(() => {
-            // 2秒后彩虹覆盖（1.5秒过渡）
             rainbowOverlay.classList.add('show');
             body.classList.add('rainbow-bg');
             container.classList.add('rainbow');
             console.log('🌈 彩虹覆盖层出现');
 
             setTimeout(() => {
-                // 彩虹覆盖1.5秒后显示"你是谁？"（渐显）
                 whoAreYou.classList.add('show');
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
@@ -593,7 +593,6 @@
                 });
                 console.log('❓ 显示 "你是谁？" (渐显)');
 
-                // 2秒后弹出输入框
                 setTimeout(() => {
                     whoAreYou.classList.remove('show');
                     whoText.classList.remove('fade-in');
@@ -608,21 +607,20 @@
                     console.log('📝 弹出名字输入框');
                 }, 2000);
 
-            }, 1500); // 彩虹覆盖持续时间改为1.5秒
+            }, 1500);
         }, 2000);
 
         // ============================================================
-        //  第二步：名字验证（三个分支）
+        //  第二步：名字验证（五个分支）
         // ============================================================
         function handleNameSubmit() {
             const name = popupInput.value.trim();
             if (name === '') {
-                // 空输入无反应
                 return;
             }
 
+            // ---- 分支1：徐翼欢 ----
             if (name === '徐翼欢') {
-                // ===== 徐翼欢 → 白屏 + 强制返回 =====
                 popupOverlay.classList.remove('show');
                 body.classList.add('whiteout');
                 container.classList.add('whiteout');
@@ -644,13 +642,16 @@
                 return;
             }
 
+            // ---- 分支2：夕阳红 ----
             if (name === '夕阳红') {
-                // ===== 夕阳红 → 彩蛋解锁 =====
                 popupOverlay.classList.remove('show');
                 popupTitle.textContent = '🎉 恭喜你解锁了隐藏彩蛋！';
                 popupDesc.textContent = '';
                 popupInput.style.display = 'none';
                 popupBtn.textContent = '好的！';
+                // 设置回复头像和名字
+                replyAvatar = 'blessing.jpg';
+                replyName = '大口进食牛肉盖饭';
                 popupBtn.onclick = function() {
                     popupOverlay.classList.remove('show');
                     body.classList.remove('rainbow-bg');
@@ -666,8 +667,34 @@
                 return;
             }
 
+            // ---- 分支3&4：遮阳棚 &张延佩----
+            if (name === '遮阳棚' or '张延佩') {
+                popupOverlay.classList.remove('show');
+                popupTitle.textContent = '🎉 我的真命天女，你也想偷窥我的日记吗(・∀・)b';
+                popupDesc.textContent = '';
+                popupInput.style.display = 'none';
+                popupBtn.textContent = '好的！';
+                // 设置回复头像和名字
+                replyAvatar = 'person.jpg';
+                replyName = '留在X的世界';
+                popupBtn.onclick = function() {
+                    popupOverlay.classList.remove('show');
+                    body.classList.remove('rainbow-bg');
+                    container.classList.remove('rainbow');
+                    rainbowOverlay.classList.remove('show');
+                    opContent.classList.remove('blurred');
+                    opContent.classList.add('clear');
+                    replySection.classList.add('show');
+                    console.log('✨ 遮阳棚 → 彩蛋解锁！回复身份已切换为 "留在X的世界"');
+                };
+                popupOverlay.classList.add('show');
+                console.log('🎉 遮阳棚 → 彩蛋解锁');
+                return;
+            }
+
+
+            // ---- 分支5：熊依涵 ----
             if (name === '熊依涵') {
-                // ===== 熊依涵 → 警告弹窗 =====
                 popupOverlay.classList.remove('show');
                 setTimeout(() => {
                     popupOverlay.classList.add('show');
@@ -677,7 +704,6 @@
                     popupBtn.textContent = '知道了！';
                     popupBtn.onclick = function() {
                         popupOverlay.classList.remove('show');
-                        // 重新打开名字输入框
                         setTimeout(() => {
                             popupOverlay.classList.add('show');
                             popupTitle.textContent = '请输入你的名字';
@@ -696,19 +722,17 @@
                 return;
             }
 
-            // ===== 其他名字 → 无反应，无提示 =====
-            // 什么也不做
+            // ---- 其他名字：无反应 ----
             console.log(`🔇 未知名字 "${name}"，无反应`);
         }
 
-        // 绑定确定按钮
         popupBtn.addEventListener('click', handleNameSubmit);
         popupInput.addEventListener('keyup', function(e) {
             if (e.key === 'Enter') handleNameSubmit();
         });
 
         // ============================================================
-        //  第三步：回复功能
+        //  第三步：回复功能（使用动态头像和名字）
         // ============================================================
         sendReplyBtn.addEventListener('click', function() {
             const text = replyInput.value.trim();
@@ -725,16 +749,16 @@
             const replyItem = document.createElement('div');
             replyItem.className = 'reply-item';
             replyItem.innerHTML = `
-                <div class="reply-avatar"></div>
+                <div class="reply-avatar" style="background-image: url('${replyAvatar}');"></div>
                 <div class="reply-body">
-                    <span class="reply-name">大口进食牛肉盖饭</span>
+                    <span class="reply-name">${replyName}</span>
                     <span class="reply-time">${timeStr}</span>
                     <div class="reply-text">${text}</div>
                 </div>
             `;
             replyList.appendChild(replyItem);
             replyInput.value = '';
-            console.log(`💬 回复已发送: "${text}" (${timeStr})`);
+            console.log(`💬 回复已发送: "${text}" (${timeStr}) 身份: ${replyName}`);
         });
 
         replyInput.addEventListener('keyup', function(e) {
@@ -743,7 +767,7 @@
 
         console.log('📄 帖子详情页已加载 (15.html)');
         console.log('🔮 流程: 虚化2s → 彩虹1.5s → "你是谁？"渐显2s → 输入名字');
-        console.log('📌 正确彩蛋名字: 夕阳红');
+        console.log('📌 正确彩蛋名字: 夕阳红 / 遮阳棚 / 张延佩');
         console.log('📌 禁忌名字: 徐翼欢 (强制返回)');
         console.log('📌 警告名字: 熊依涵 (弹窗警告)');
         console.log('📌 其他名字: 无反应无提示');

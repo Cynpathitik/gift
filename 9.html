@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科普：爱因斯坦与相对论 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+            position: relative;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .op-info .op-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 2.0;
+        }
+
+        .op-content p {
+            margin-bottom: 10px;
+        }
+
+        .op-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .op-content .highlight {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f0ece6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .reply-item {
+            display: flex;
+            flex-direction: column;
+            padding: 14px 0;
+            border-bottom: 1px solid #f2eee8;
+        }
+
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+
+        .reply-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f1f1f;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .reply-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .reply-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .reply-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 2px;
+            font-size: 12px;
+            color: #b0a89c;
+        }
+
+        .reply-meta .floor {
+            color: #c4b8aa;
+        }
+
+        .reply-content {
+            font-size: 15px;
+            color: #2a2a2a;
+            line-height: 1.8;
+            margin-top: 6px;
+            padding-left: 2px;
+        }
+
+        .reply-content .highlight {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f0ece6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.total) {
+            background: #faf8f5;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* ===== 通关弹窗 ===== */
+        .win-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .win-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .win-overlay .win-box {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 48px 44px 40px 44px;
+            max-width: 520px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            border: 3px solid #ffb347;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .win-overlay .win-box .trophy {
+            font-size: 56px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .win-overlay .win-box .win-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .win-overlay .win-box .win-desc {
+            font-size: 16px;
+            color: #3a3a3a;
+            line-height: 2.0;
+            margin-bottom: 20px;
+        }
+
+        .win-overlay .win-box .win-desc .highlight {
+            color: #d4a05a;
+            font-weight: bold;
+        }
+
+        .win-overlay .win-box .win-btn {
+            padding: 12px 36px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 16px;
+            background: #ffb347;
+            border: 3px solid #d48a2a;
+            border-radius: 12px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .win-overlay .win-box .win-btn:hover {
+            background: #f0a030;
+            transform: scale(1.02);
+        }
+
+        .win-overlay .win-box .win-btn:active {
+            transform: scale(0.97);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .reply-content {
+                font-size: 14px;
+            }
+            .win-overlay .win-box {
+                padding: 32px 24px 28px 24px;
+            }
+            .win-overlay .win-box .win-title {
+                font-size: 19px;
+            }
+            .win-overlay .win-box .win-desc {
+                font-size: 14px;
+            }
+            .win-overlay .win-box .win-btn {
+                font-size: 14px;
+                padding: 10px 28px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .reply-content {
+                font-size: 13px;
+            }
+            .win-overlay .win-box .win-title {
+                font-size: 17px;
+            }
+            .win-overlay .win-box .win-desc {
+                font-size: 13px;
+            }
+            .win-overlay .win-box .win-btn {
+                font-size: 13px;
+                padding: 8px 20px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='result.html'">返回搜索结果</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">科普：爱因斯坦与相对论</div>
+
+    <!-- ===== 楼主信息 ===== -->
+    <div class="op-info">
+        <span class="op-name">楼主 · 能大小助手</span>
+        <span class="op-time">2026年9月1日</span>
+    </div>
+
+    <!-- ===== 楼主发言（科普内容） ===== -->
+    <div class="op-content">
+        <p>🌟 <span class="highlight">阿尔伯特·爱因斯坦</span>（1879-1955）是20世纪最伟大的物理学家之一，他的相对论彻底改变了人类对时空的认知。</p>
+        <p>🔭 <span class="highlight">狭义相对论</span>（1905）提出了两个颠覆性概念：</p>
+        <p>　• 物理定律在所有惯性参考系中形式不变</p>
+        <p>　• 光速在真空中恒定，不随观察者运动状态改变</p>
+        <p>　• 由此推导出著名的 <span class="highlight">E = mc²</span>，揭示了质量与能量的等价关系</p>
+        <p>🌌 <span class="highlight">广义相对论</span>（1915）则进一步指出：</p>
+        <p>　• 引力并非一种“力”，而是质量对时空造成的弯曲</p>
+        <p>　• 行星绕太阳运动，实际上是沿弯曲时空中的“测地线”运动</p>
+        <p>　• 预言了光线在引力场中偏折、引力红移、引力波等现象</p>
+        <p>🧠 有趣的是，爱因斯坦在提出这些理论时，大量借助了“思想实验”——比如“追光实验”和“电梯实验”，用想象力先行抵达了物理学的边界。</p>
+        <p>📚 时至今日，相对论仍是现代物理学的基石之一，从GPS卫星导航到宇宙学观测，都在不断验证着这位天才的远见。</p>
+    </div>
+
+    <!-- ===== 回复列表 ===== -->
+
+    <!-- 2L -->
+    <div class="reply-item">
+        <span class="reply-name">qwerty</span>
+        <div class="reply-meta">
+            <span class="floor">#2</span>
+            <span>2026年9月1日</span>
+        </div>
+        <div class="reply-content">我只知道爱因斯坦像这里不知道为什么多了个快递……</div>
+    </div>
+
+    <!-- ===== 页码 ===== -->
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn total">共1页</span>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<!-- ===== 通关弹窗 ===== -->
+<div class="win-overlay" id="winOverlay">
+    <div class="win-box">
+        <span class="trophy">🎉</span>
+        <div class="win-title">恭喜你通关本游戏！</div>
+        <div class="win-desc">
+            现在你知道了快递的所在地点，<br>
+            <span class="highlight">快去寻找它吧！</span>
+        </div>
+        <button class="win-btn" id="winBtn">好的！</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+
+        const container = document.getElementById('container');
+        const winOverlay = document.getElementById('winOverlay');
+        const winBtn = document.getElementById('winBtn');
+
+        let triggered = false;
+
+        // ===== 检测是否滚动到底部 =====
+        function checkScroll() {
+            if (triggered) return;
+
+            const scrollY = window.scrollY || window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            // 距离底部小于 50px 时触发
+            if (scrollY + windowHeight >= documentHeight - 50) {
+                triggered = true;
+                console.log('📌 已滚动到底部，等待 3 秒后显示通关弹窗...');
+
+                // 等待 3 秒后显示弹窗
+                setTimeout(() => {
+                    winOverlay.classList.add('show');
+                    console.log('🎉 通关弹窗已显示！');
+                }, 3000);
+            }
+        }
+
+        // ===== 绑定滚动事件 =====
+        window.addEventListener('scroll', checkScroll);
+        // 也检查一次初始状态（如果页面很短，一开始就在底部）
+        setTimeout(checkScroll, 500);
+
+        // ===== 关闭弹窗 =====
+        winBtn.addEventListener('click', function() {
+            winOverlay.classList.remove('show');
+            console.log('👋 弹窗已关闭，游戏结束！');
+        });
+
+        // 点击弹窗背景也可以关闭
+        winOverlay.addEventListener('click', function(e) {
+            if (e.target === winOverlay) {
+                winOverlay.classList.remove('show');
+            }
+        });
+
+        console.log('📄 帖子详情页已加载 (9.html)');
+        console.log('👤 楼主：能大小助手');
+        console.log('📌 滚动到底部 → 等待 3 秒 → 显示通关弹窗');
+
+    })();
+</script>
+
+</body>
+</html>

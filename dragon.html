@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>◑.◑ 的主页 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+        }
+
+        /* ===== 返回按钮 ===== */
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        /* ===== 资料卡 ===== */
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 20px 20px 20px;
+            background: #f8f6f2;
+            border-radius: 16px;
+            border: 2px solid #e8e3db;
+            margin-bottom: 24px;
+        }
+
+        .profile-card .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid #d4c8ba;
+            flex-shrink: 0;
+            background-image: url('leave.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: #e8e3db;
+        }
+
+        .profile-card .info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-card .info .name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-card .info .name .badge {
+            font-size: 13px;
+            color: #8a7a6a;
+            font-weight: normal;
+            margin-left: 8px;
+            background: #ece8e0;
+            padding: 0 10px;
+            border-radius: 12px;
+        }
+
+        .profile-card .info .bio {
+            font-size: 13px;
+            color: #b0a89c;
+            letter-spacing: 0.3px;
+        }
+
+        .profile-card .info .bio .heart {
+            color: #e06060;
+        }
+
+        /* ===== 发帖记录标题 ===== */
+        .section-title {
+            font-size: 14px;
+            color: #7a7a7a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .count {
+            background: #f0ece6;
+            padding: 0 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #5a554a;
+        }
+
+        /* ===== 帖子列表 ===== */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 8px;
+        }
+
+        .post-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f2eee8;
+            border-radius: 6px;
+            transition: background 0.1s ease;
+        }
+
+        .post-item:hover {
+            background: #f8f6f2;
+        }
+
+        /* ===== 可点击的帖子 ===== */
+        .post-item.clickable {
+            cursor: pointer;
+        }
+
+        .post-item.clickable:hover {
+            background: #f2ede6;
+        }
+
+        .post-item.clickable .post-title {
+            color: #1a1a1a;
+        }
+
+        .post-item.clickable .post-title::after {
+            content: " ↗";
+            font-size: 12px;
+            color: #b0a89c;
+            margin-left: 4px;
+        }
+
+        .post-item.clickable:hover .post-title {
+            color: #6a5a4a;
+        }
+
+        /* ===== 不可点击的帖子（灰色） ===== */
+        .post-item.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .post-item.disabled .post-title {
+            color: #8a8a8a;
+        }
+
+        .post-item .post-dot {
+            color: #cdc4b8;
+            font-size: 16px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            user-select: none;
+        }
+
+        .post-item .post-title {
+            font-size: 15px;
+            color: #1f1f1f;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .post-item .post-time {
+            font-size: 12px;
+            color: #b0a89c;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        /* ===== 底部 ===== */
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 16px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .profile-card {
+                padding: 14px 16px 16px 16px;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+            .profile-card .avatar {
+                width: 60px;
+                height: 60px;
+            }
+            .profile-card .info .name {
+                font-size: 17px;
+            }
+            .profile-card .info .bio {
+                font-size: 12px;
+            }
+            .post-item {
+                padding: 12px 10px;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .post-item .post-title {
+                font-size: 14px;
+            }
+            .post-item .post-time {
+                font-size: 11px;
+                margin-left: auto;
+            }
+            .section-title {
+                font-size: 13px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .profile-card .avatar {
+                width: 50px;
+                height: 50px;
+            }
+            .profile-card .info .name {
+                font-size: 15px;
+            }
+            .profile-card .info .name .badge {
+                font-size: 11px;
+                padding: 0 6px;
+            }
+            .post-item .post-title {
+                font-size: 13px;
+            }
+            .post-item .post-time {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='2.html'">返回论坛</div>
+
+    <!-- ===== 资料卡 ===== -->
+    <div class="profile-card">
+        <div class="avatar"></div>
+        <div class="info">
+            <div class="name">
+                ◑.◑
+                <span class="badge"># 好友</span>
+            </div>
+            <div class="bio">
+                <span class="heart">❤️</span> 对方是你的好友 · 共 4 篇帖子
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 发帖记录 ===== -->
+    <div class="section-title">
+        📝 发帖记录
+        <span class="count">4</span>
+    </div>
+
+    <div class="post-list">
+        <!-- 帖子1：可点击 → 10.html -->
+        <div class="post-item clickable" data-link="10.html">
+            <span class="post-dot">·</span>
+            <span class="post-title">有没有人知道化妆品化学这门课的要求呀</span>
+            <span class="post-time">2026-08-30</span>
+        </div>
+
+        <!-- 帖子2：可点击 → 5.html -->
+        <div class="post-item clickable" data-link="5.html">
+            <span class="post-dot">·</span>
+            <span class="post-title">谁有元小牛的联系方式</span>
+            <span class="post-time">2026-08-29</span>
+        </div>
+
+        <!-- 帖子3：不可点击 -->
+        <div class="post-item disabled">
+            <span class="post-dot">·</span>
+            <span class="post-title">关于辅修专业的几个问题</span>
+            <span class="post-time">2026-06-10</span>
+        </div>
+
+        <!-- 帖子4：不可点击 -->
+        <div class="post-item disabled">
+            <span class="post-dot">·</span>
+            <span class="post-title">15号楼楼下有件衣服掉了</span>
+            <span class="post-time">2026-05-05</span>
+        </div>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        // ===== 可点击帖子跳转 =====
+        document.querySelectorAll('.post-item.clickable').forEach(item => {
+            item.addEventListener('click', function() {
+                const link = this.dataset.link;
+                if (link) {
+                    window.location.href = link;
+                    console.log(`📍 跳转到：${link}`);
+                }
+            });
+        });
+
+        console.log('🐉 用户主页已加载 (dragon.html)');
+        console.log('👤 用户：◑.◑');
+        console.log('📌 共 4 篇帖子，前 2 篇可点击跳转');
+        console.log('🔗 帖子1 → 10.html');
+        console.log('🔗 帖子2 → 5.html');
+    })();
+</script>
+
+</body>
+</html>

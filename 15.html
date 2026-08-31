@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日记 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+            transition: background 1s ease;
+        }
+
+        body.rainbow-bg {
+            background: linear-gradient(135deg, 
+                #ffd9de, 
+                #ffded0, 
+                #ffffd4, 
+                #d4f0d4, 
+                #d4dfff, 
+                #e6d4ff, 
+                #ffd4e6
+            );
+            background-size: 100% 100%;
+        }
+
+        body.whiteout {
+            background: #ffffff !important;
+            filter: none !important;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+            transition: background 1s ease, filter 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container.rainbow {
+            background: linear-gradient(135deg, 
+                #ffd9de, 
+                #ffded0, 
+                #ffffd4, 
+                #d4f0d4, 
+                #d4dfff, 
+                #e6d4ff, 
+                #ffd4e6
+            );
+            background-size: 100% 100%;
+        }
+
+        .container.whiteout {
+            background: #ffffff !important;
+            filter: none !important;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .op-info .op-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 2.0;
+            filter: blur(8px);
+            transition: filter 0.3s ease;
+            user-select: none;
+        }
+
+        .op-content.blurred {
+            filter: blur(8px);
+        }
+
+        .op-content.clear {
+            filter: blur(0px);
+            user-select: auto;
+        }
+
+        .op-content p {
+            margin-bottom: 12px;
+        }
+
+        .op-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rainbow-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                #ffd9de, 
+                #ffded0, 
+                #ffffd4, 
+                #d4f0d4, 
+                #d4dfff, 
+                #e6d4ff, 
+                #ffd4e6
+            );
+            opacity: 0;
+            pointer-events: none;
+            border-radius: 24px;
+            transition: opacity 1s ease;
+            z-index: 10;
+        }
+
+        .rainbow-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .who-are-you {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(2px);
+        }
+
+        .who-are-you.show {
+            display: flex;
+        }
+
+        .who-are-you .big-text {
+            font-size: 42px;
+            font-weight: bold;
+            color: #f5b8c8;
+            text-shadow: 0 0 30px rgba(245, 184, 200, 0.3);
+            letter-spacing: 6px;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        .who-are-you .big-text.fade-in {
+            opacity: 1;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        .popup-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px 36px 28px 36px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-box .popup-title {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .popup-box .popup-desc {
+            font-size: 15px;
+            color: #4a4a4a;
+            margin-bottom: 18px;
+            line-height: 1.8;
+        }
+
+        .popup-box input {
+            padding: 10px 16px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            border: 2px solid #ddd6cc;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f1f1f;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .popup-box input:focus {
+            border-color: #b8a99a;
+        }
+
+        .popup-box button {
+            padding: 10px 32px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            background: #d4c8ba;
+            border: 2px solid #c4b6a6;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .popup-box button:hover {
+            background: #c4b6a6;
+        }
+
+        .reply-section {
+            display: none;
+            margin-top: 12px;
+            border-top: 2px solid #f0ece6;
+            padding-top: 14px;
+        }
+
+        .reply-section.show {
+            display: block;
+        }
+
+        .reply-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .reply-input-row input {
+            flex: 1;
+            padding: 10px 16px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            border: 2px solid #ddd6cc;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f1f1f;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .reply-input-row input:focus {
+            border-color: #b8a99a;
+        }
+
+        .reply-input-row button {
+            padding: 10px 20px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            background: #d4c8ba;
+            border: 2px solid #c4b6a6;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .reply-input-row button:hover {
+            background: #c4b6a6;
+        }
+
+        .reply-list {
+            margin-top: 12px;
+        }
+
+        .reply-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f2eee8;
+        }
+
+        .reply-item .reply-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #d4c8ba;
+            flex-shrink: 0;
+            background-image: url('blessing.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .reply-item .reply-body {
+            flex: 1;
+        }
+
+        .reply-item .reply-body .reply-name {
+            font-size: 13px;
+            font-weight: bold;
+            color: #1f1f1f;
+        }
+
+        .reply-item .reply-body .reply-time {
+            font-size: 11px;
+            color: #b0a89c;
+            margin-left: 10px;
+        }
+
+        .reply-item .reply-body .reply-text {
+            font-size: 14px;
+            color: #2a2a2a;
+            margin-top: 2px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .who-are-you .big-text {
+                font-size: 30px;
+                letter-spacing: 4px;
+            }
+            .popup-box {
+                padding: 24px 20px 20px 20px;
+            }
+            .reply-input-row {
+                flex-wrap: wrap;
+            }
+            .reply-input-row input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .who-are-you .big-text {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="container">
+
+    <div class="rainbow-overlay" id="rainbowOverlay"></div>
+
+    <div class="who-are-you" id="whoAreYou">
+        <span class="big-text" id="whoText">你是谁？</span>
+    </div>
+
+    <div class="back-link" onclick="window.location.href='nameless.html'">返回主页</div>
+
+    <div class="post-title">日记</div>
+
+    <div class="op-info">
+        <span class="op-name">楼主 · 匿名人士</span>
+        <span class="op-time">2026年5月9日</span>
+    </div>
+
+    <div class="op-content blurred" id="opContent">
+        <p>你被骗进来了吗？</p>
+        <p>这其实不是日记。是想对欢欢说的话！</p>
+        <p>对于左星冉来说，能和徐翼欢成为朋友，是很幸福的事情。</p>
+        <p>所以，无论我是不是人类，或者也无论你是不是人类，让我们作为人类一起活下去吧！</p>
+    </div>
+
+    <div class="reply-section" id="replySection">
+        <div class="reply-list" id="replyList"></div>
+        <div class="reply-input-row">
+            <input type="text" id="replyInput" placeholder="说点什么……">
+            <button id="sendReplyBtn">发送</button>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn total">共1页</span>
+    </div>
+
+</div>
+
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box">
+        <div class="popup-title" id="popupTitle">请输入你的名字</div>
+        <div class="popup-desc" id="popupDesc"></div>
+        <input type="text" id="popupInput" placeholder="输入名字..." autocomplete="off">
+        <button id="popupBtn">确定</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+
+        const container = document.getElementById('container');
+        const body = document.body;
+        const opContent = document.getElementById('opContent');
+        const rainbowOverlay = document.getElementById('rainbowOverlay');
+        const whoAreYou = document.getElementById('whoAreYou');
+        const whoText = document.getElementById('whoText');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const popupInput = document.getElementById('popupInput');
+        const popupBtn = document.getElementById('popupBtn');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupDesc = document.getElementById('popupDesc');
+        const replySection = document.getElementById('replySection');
+        const replyInput = document.getElementById('replyInput');
+        const sendReplyBtn = document.getElementById('sendReplyBtn');
+        const replyList = document.getElementById('replyList');
+
+        let isWhiteout = false;
+
+        // ============================================================
+        //  第一步：虚化 2 秒 → 彩虹覆盖 1.5 秒 → "你是谁？" 渐显
+        // ============================================================
+        setTimeout(() => {
+            // 2秒后彩虹覆盖（1.5秒过渡）
+            rainbowOverlay.classList.add('show');
+            body.classList.add('rainbow-bg');
+            container.classList.add('rainbow');
+            console.log('🌈 彩虹覆盖层出现');
+
+            setTimeout(() => {
+                // 彩虹覆盖1.5秒后显示"你是谁？"（渐显）
+                whoAreYou.classList.add('show');
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        whoText.classList.add('fade-in');
+                    });
+                });
+                console.log('❓ 显示 "你是谁？" (渐显)');
+
+                // 2秒后弹出输入框
+                setTimeout(() => {
+                    whoAreYou.classList.remove('show');
+                    whoText.classList.remove('fade-in');
+                    popupOverlay.classList.add('show');
+                    popupTitle.textContent = '请输入你的名字';
+                    popupDesc.textContent = '';
+                    popupInput.value = '';
+                    popupInput.style.display = 'block';
+                    popupBtn.textContent = '确定';
+                    popupBtn.style.display = 'inline-block';
+                    popupInput.focus();
+                    console.log('📝 弹出名字输入框');
+                }, 2000);
+
+            }, 1500); // 彩虹覆盖持续时间改为1.5秒
+        }, 2000);
+
+        // ============================================================
+        //  第二步：名字验证（三个分支）
+        // ============================================================
+        function handleNameSubmit() {
+            const name = popupInput.value.trim();
+            if (name === '') {
+                // 空输入无反应
+                return;
+            }
+
+            if (name === '徐翼欢') {
+                // ===== 徐翼欢 → 白屏 + 强制返回 =====
+                popupOverlay.classList.remove('show');
+                body.classList.add('whiteout');
+                container.classList.add('whiteout');
+                rainbowOverlay.classList.remove('show');
+                isWhiteout = true;
+
+                setTimeout(() => {
+                    popupOverlay.classList.add('show');
+                    popupTitle.textContent = '⚠️ 这是不能给你看的！';
+                    popupDesc.textContent = '';
+                    popupInput.style.display = 'none';
+                    popupBtn.textContent = '确定';
+                    popupBtn.onclick = function() {
+                        window.location.href = 'nameless.html';
+                    };
+                    popupBtn.style.display = 'inline-block';
+                    console.log('🚫 徐翼欢 → 强制返回 nameless.html');
+                }, 300);
+                return;
+            }
+
+            if (name === '夕阳红') {
+                // ===== 夕阳红 → 彩蛋解锁 =====
+                popupOverlay.classList.remove('show');
+                popupTitle.textContent = '🎉 恭喜你解锁了隐藏彩蛋！';
+                popupDesc.textContent = '';
+                popupInput.style.display = 'none';
+                popupBtn.textContent = '好的！';
+                popupBtn.onclick = function() {
+                    popupOverlay.classList.remove('show');
+                    body.classList.remove('rainbow-bg');
+                    container.classList.remove('rainbow');
+                    rainbowOverlay.classList.remove('show');
+                    opContent.classList.remove('blurred');
+                    opContent.classList.add('clear');
+                    replySection.classList.add('show');
+                    console.log('✨ 彩蛋解锁！画面恢复正常，可回复');
+                };
+                popupOverlay.classList.add('show');
+                console.log('🎉 夕阳红 → 彩蛋解锁');
+                return;
+            }
+
+            if (name === '熊依涵') {
+                // ===== 熊依涵 → 警告弹窗 =====
+                popupOverlay.classList.remove('show');
+                setTimeout(() => {
+                    popupOverlay.classList.add('show');
+                    popupTitle.textContent = '⚠️ 不要把真名暴露出来啊！！';
+                    popupDesc.textContent = '';
+                    popupInput.style.display = 'none';
+                    popupBtn.textContent = '知道了！';
+                    popupBtn.onclick = function() {
+                        popupOverlay.classList.remove('show');
+                        // 重新打开名字输入框
+                        setTimeout(() => {
+                            popupOverlay.classList.add('show');
+                            popupTitle.textContent = '请输入你的名字';
+                            popupDesc.textContent = '';
+                            popupInput.style.display = 'block';
+                            popupInput.value = '';
+                            popupBtn.textContent = '确定';
+                            popupBtn.onclick = handleNameSubmit;
+                            popupBtn.style.display = 'inline-block';
+                            popupInput.focus();
+                        }, 300);
+                    };
+                    popupBtn.style.display = 'inline-block';
+                    console.log('🔔 熊依涵 → 警告弹窗');
+                }, 300);
+                return;
+            }
+
+            // ===== 其他名字 → 无反应，无提示 =====
+            // 什么也不做
+            console.log(`🔇 未知名字 "${name}"，无反应`);
+        }
+
+        // 绑定确定按钮
+        popupBtn.addEventListener('click', handleNameSubmit);
+        popupInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') handleNameSubmit();
+        });
+
+        // ============================================================
+        //  第三步：回复功能
+        // ============================================================
+        sendReplyBtn.addEventListener('click', function() {
+            const text = replyInput.value.trim();
+            if (text === '') return;
+
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+
+            const replyItem = document.createElement('div');
+            replyItem.className = 'reply-item';
+            replyItem.innerHTML = `
+                <div class="reply-avatar"></div>
+                <div class="reply-body">
+                    <span class="reply-name">大口进食牛肉盖饭</span>
+                    <span class="reply-time">${timeStr}</span>
+                    <div class="reply-text">${text}</div>
+                </div>
+            `;
+            replyList.appendChild(replyItem);
+            replyInput.value = '';
+            console.log(`💬 回复已发送: "${text}" (${timeStr})`);
+        });
+
+        replyInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') sendReplyBtn.click();
+        });
+
+        console.log('📄 帖子详情页已加载 (15.html)');
+        console.log('🔮 流程: 虚化2s → 彩虹1.5s → "你是谁？"渐显2s → 输入名字');
+        console.log('📌 正确彩蛋名字: 夕阳红');
+        console.log('📌 禁忌名字: 徐翼欢 (强制返回)');
+        console.log('📌 警告名字: 熊依涵 (弹窗警告)');
+        console.log('📌 其他名字: 无反应无提示');
+
+    })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唐岛能源大学 · 校园论坛</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px;
+        }
+
+        .forum-container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== 顶部封面图 ===== */
+        .cover-section {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: #d9d0c4;
+            flex-shrink: 0;
+        }
+
+        .cover-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.92));
+            pointer-events: none;
+        }
+
+        /* ===== 头像 + 论坛名 ===== */
+        .header-info {
+            display: flex;
+            align-items: flex-end;
+            gap: 18px;
+            padding: 0 28px 18px 28px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .forum-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+            background-image: url('upc.jpg');
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            background-color: #d9d0c4;
+        }
+
+        .forum-name-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 6px;
+            flex: 1;
+        }
+
+        .forum-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 1px;
+        }
+
+        .forum-member-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+
+        .forum-member-count {
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .forum-member-count::before {
+            content: "👥 ";
+        }
+
+        /* ===== 搜索框 ===== */
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f5f2ed;
+            border-radius: 20px;
+            padding: 4px 6px 4px 16px;
+            border: 1px solid #e3ddd4;
+            transition: border 0.2s;
+            flex: 1;
+            max-width: 260px;
+        }
+
+        .search-box:focus-within {
+            border-color: #b8a99a;
+            background: #faf8f5;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 4px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 13px;
+            color: #1f1f1f;
+            outline: none;
+            min-width: 80px;
+        }
+
+        .search-box input::placeholder {
+            color: #b8b0a4;
+            font-size: 12px;
+        }
+
+        .search-box button {
+            background: #d4c8ba;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 16px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+            letter-spacing: 0.5px;
+        }
+
+        .search-box button:hover {
+            background: #c4b6a6;
+        }
+
+        /* ===== 帖子列表 ===== */
+        .post-list {
+            flex: 1;
+            padding: 14px 28px 8px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .post-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 14px;
+            border-bottom: 1px solid #f2eee8;
+            border-radius: 6px;
+            transition: background 0.1s ease;
+        }
+
+        .post-item:hover {
+            background: #f8f6f2;
+        }
+
+        .post-item.pinned {
+            background: #fcfaf7;
+            border-left: 4px solid #ffb347;
+            padding-left: 12px;
+            cursor: pointer;
+        }
+
+        .post-item.pinned:hover {
+            background: #f7f3ec;
+        }
+
+        .essence-icon {
+            display: inline-block;
+            background: #ffb347;
+            color: #ffffff;
+            font-size: 12px;
+            padding: 1px 10px 2px 8px;
+            border-radius: 14px;
+            font-weight: bold;
+            line-height: 1.5;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .essence-icon::before {
+            content: "⭐ ";
+            font-size: 11px;
+        }
+
+        .post-title {
+            font-size: 15px;
+            color: #1f1f1f;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .post-item.pinned .post-title {
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        .post-item:not(.pinned) {
+            cursor: default;
+        }
+
+        .post-item:not(.pinned) .post-title {
+            color: #3a3a3a;
+        }
+
+        .post-dot {
+            color: #cdc4b8;
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* ===== 页码 ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 28px 10px 28px;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.ellipsis {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            min-width: 20px;
+            padding: 0 4px;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.ellipsis):not(.total) {
+            background: #faf8f5;
+        }
+
+        /* ===== 底部输入框 ===== */
+        .footer-input {
+            padding: 12px 28px 20px 28px;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .forum-container {
+                border-radius: 18px;
+            }
+            .cover-section {
+                height: 130px;
+            }
+            .header-info {
+                padding: 0 16px 14px 16px;
+                margin-top: -38px;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .forum-avatar {
+                width: 72px;
+                height: 72px;
+                border-width: 3px;
+            }
+            .forum-name {
+                font-size: 20px;
+            }
+            .forum-member-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+            .search-box {
+                max-width: 100%;
+                width: 100%;
+            }
+            .post-list {
+                padding: 12px 16px 6px 16px;
+            }
+            .post-item {
+                padding: 11px 8px;
+                gap: 8px;
+            }
+            .post-title {
+                font-size: 14px;
+            }
+            .essence-icon {
+                font-size: 10px;
+                padding: 0 8px 1px 6px;
+            }
+            .pagination {
+                padding: 14px 16px 8px 16px;
+                gap: 5px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .footer-input {
+                padding: 10px 16px 16px 16px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .cover-section {
+                height: 100px;
+            }
+            .forum-avatar {
+                width: 60px;
+                height: 60px;
+            }
+            .forum-name {
+                font-size: 17px;
+            }
+            .header-info {
+                margin-top: -30px;
+            }
+            .post-title {
+                font-size: 13px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="forum-container">
+
+    <!-- ===== 顶部封面图 ===== -->
+    <div class="cover-section"></div>
+
+    <!-- ===== 头像 + 论坛名 ===== -->
+    <div class="header-info">
+        <div class="forum-avatar"></div>
+        <div class="forum-name-wrapper">
+            <div class="forum-name">唐岛能源大学</div>
+            <div class="forum-member-row">
+                <span class="forum-member-count">4.2万成员</span>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="搜索帖子、成员……" autocomplete="off">
+                    <button id="searchBtn">搜索</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 帖子列表 ===== -->
+    <div class="post-list" id="postList">
+        <div class="post-item pinned" id="pinnedPost">
+            <span class="essence-icon">精华</span>
+            <span class="post-title">你能专的校园跑软件又发什么疯？</span>
+        </div>
+    </div>
+
+    <!-- ===== 页码 ===== -->
+    <div class="pagination" id="pagination">
+        <!-- 由 JavaScript 生成 -->
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">分享这一刻的想法……</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+
+        // ============================================================
+        //  1. 置顶帖点击跳转
+        // ============================================================
+        document.getElementById('pinnedPost').addEventListener('click', function() {
+            window.location.href = '3.html';
+        });
+
+        // ============================================================
+        //  2. 指定帖子列表（10个）
+        // ============================================================
+        const postTitles = [
+            "公选课全球核心2.0有推荐吗？",
+            "20号楼689宿舍脏得要死",
+            "宿舍楼下的水果店你怎么走了",
+            "有没有人知道思政实践课的作业要求",
+            "9.3交换人生带价来",
+            "找jia角",
+            "古镇口周五上午3 4节乒乓球换健美",
+            "大二转专业求助",
+            "要来能大读书啦，求外院导师推荐",
+            "新生有一些问题想问学长学姐"
+        ];
+
+        const postList = document.getElementById('postList');
+
+        function renderPosts() {
+            const existingItems = postList.querySelectorAll('.post-item:not(.pinned)');
+            existingItems.forEach(el => el.remove());
+
+            postTitles.forEach(title => {
+                const postItem = document.createElement('div');
+                postItem.className = 'post-item';
+
+                const dot = document.createElement('span');
+                dot.className = 'post-dot';
+                dot.textContent = '·';
+
+                const titleSpan = document.createElement('span');
+                titleSpan.className = 'post-title';
+                titleSpan.textContent = title;
+
+                postItem.appendChild(dot);
+                postItem.appendChild(titleSpan);
+                postList.appendChild(postItem);
+            });
+        }
+
+        renderPosts();
+
+        // ============================================================
+        //  3. 页码（1 2 3 4 5 6 … 99+页）
+        // ============================================================
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const pages = [1, 2, 3, 4, 5, 6, '…', '99+'];
+
+            pages.forEach((page) => {
+                const btn = document.createElement('span');
+                btn.className = 'page-btn';
+
+                if (page === '…') {
+                    btn.classList.add('ellipsis');
+                    btn.textContent = '…';
+                } else if (page === '99+') {
+                    btn.classList.add('total');
+                    btn.textContent = '99+页';
+                } else if (page === 1) {
+                    btn.classList.add('active');
+                    btn.textContent = page;
+                } else {
+                    btn.textContent = page;
+                }
+
+                btn.style.cursor = 'default';
+                btn.style.pointerEvents = 'none';
+
+                pagination.appendChild(btn);
+            });
+        }
+
+        renderPagination();
+
+        // ============================================================
+        //  4. 搜索功能（直接跳转到 result.html 并带参数）
+        // ============================================================
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query === '') {
+                alert('🔍 请输入关键词搜索');
+                return;
+            }
+
+            // 直接跳转到 result.html 并带上搜索参数
+            window.location.href = 'result.html?q=' + encodeURIComponent(query);
+            console.log('🔍 搜索触发，跳转到：result.html?q=' + query);
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        console.log('📋 唐岛能源大学论坛已加载');
+        console.log('📍 置顶帖 → 3.html');
+        console.log('🔍 搜索任意内容 → result.html?q=关键词');
+
+    })();
+</script>
+
+</body>
+</html>

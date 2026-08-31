@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>有没有人知道化妆品化学这门课的要求呀 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        /* ===== 楼主信息 ===== */
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .op-info .op-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        /* ===== 楼主发言 ===== */
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ===== AI 回复（小贝） ===== */
+        .ai-reply {
+            background: #f0f5fa;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #7ab8d4;
+            position: relative;
+        }
+
+        .ai-reply .ai-badge {
+            display: inline-block;
+            background: #7ab8d4;
+            color: #ffffff;
+            font-size: 11px;
+            padding: 1px 10px 2px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .ai-reply .ai-badge::before {
+            content: "🤖 ";
+            font-size: 11px;
+        }
+
+        .ai-reply .ai-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2a6a8a;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .ai-reply .ai-content {
+            color: #2a3a4a;
+            font-size: 15px;
+            line-height: 1.9;
+            margin-top: 4px;
+        }
+
+        .ai-reply .ai-content .link-icon {
+            font-size: 14px;
+            margin-right: 2px;
+        }
+
+        .ai-reply .ai-content .post-link {
+            color: #3a8abf;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .ai-reply .ai-content .post-link:hover {
+            color: #1a5a7a;
+        }
+
+        .ai-reply .ai-content .post-link::after {
+            content: " ↗";
+            font-size: 12px;
+        }
+
+        /* ===== 无更多回复 ===== */
+        .no-more-reply {
+            text-align: center;
+            padding: 20px 0 16px 0;
+            color: #b0a89c;
+            font-size: 13px;
+            border-top: 1px solid #f0ece6;
+            margin-top: 8px;
+        }
+
+        /* ===== 页码 ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.total) {
+            background: #faf8f5;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .ai-reply {
+                padding: 14px 16px;
+            }
+            .ai-reply .ai-content {
+                font-size: 14px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .ai-reply {
+                padding: 12px 14px;
+            }
+            .ai-reply .ai-content {
+                font-size: 13px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='dragon.html'">返回主页</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">有没有人知道化妆品化学这门课的要求呀</div>
+
+    <!-- ===== 楼主信息 ===== -->
+    <div class="op-info">
+        <span class="op-name">楼主 · ◑.◑</span>
+        <span class="op-time">2026年8月30日</span>
+    </div>
+
+    <!-- ===== 楼主发言 ===== -->
+    <div class="op-content">
+        老师人好吗？平时分给的怎么样呀？
+    </div>
+
+    <!-- ===== AI 回复（小贝） ===== -->
+    <div class="ai-reply">
+        <div class="ai-badge">AI</div>
+        <div>
+            <span class="ai-name">小贝</span>
+            <span style="color: #7a8a9a; font-size: 13px;">· 能大校园小猫咪</span>
+        </div>
+        <div class="ai-content">
+            喵~作为能大校园里的一只小猫咪，这个问题我在二餐楼下听见过同学们的讨论呢！这里为你找到了相关的帖子：
+            <span class="link-icon">🔗</span>
+            <span class="post-link" id="linkTo11">公选课求推荐……</span>
+        </div>
+    </div>
+
+    <!-- ===== 无更多回复 ===== -->
+    <div class="no-more-reply">
+        💬 目前还没有更多回复
+    </div>
+
+    <!-- ===== 页码（共1页） ===== -->
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn total">共1页</span>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        // ===== 蓝色链接点击跳转到 11.html =====
+        document.getElementById('linkTo11').addEventListener('click', function() {
+            window.location.href = '11.html';
+            console.log('🔗 跳转到：11.html');
+        });
+
+        console.log('📄 帖子详情页已加载 (10.html)');
+        console.log('👤 楼主：◑.◑');
+        console.log('🤖 AI 小贝已回复');
+        console.log('🔗 蓝色链接 → 11.html');
+    })();
+</script>
+
+</body>
+</html>

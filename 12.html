@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>既然这样就进献吧 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+            transition: background-color 1.5s ease, filter 1.5s ease;
+        }
+
+        body.desaturated {
+            background: #b0b0b0;
+            filter: grayscale(100%);
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+            transition: background-color 1.5s ease, filter 1.5s ease;
+        }
+
+        .container.desaturated {
+            background: #d0d0d0;
+            filter: grayscale(100%);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .op-info .op-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 2.0;
+        }
+
+        .op-content p {
+            margin-bottom: 12px;
+        }
+
+        .op-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .op-content .highlight {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f0ece6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        /* ===== 私密提示 ===== */
+        .private-notice {
+            text-align: center;
+            padding: 20px 0 12px 0;
+            color: #a0a0a0;
+            font-size: 14px;
+            border-top: 2px solid #f0ece6;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .private-notice .icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.total) {
+            background: #faf8f5;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='nameless.html'">返回主页</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">既然这样就进献吧</div>
+
+    <!-- ===== 楼主信息 ===== -->
+    <div class="op-info">
+        <span class="op-name">楼主 · 匿名人士</span>
+        <span class="op-time">2026年9月1日</span>
+    </div>
+
+    <!-- ===== 楼主发言 ===== -->
+    <div class="op-content">
+        <p>每次看见别人开玩笑说“God is a girl”，我的心里都漾起一阵无奈……谁能想到，天神大人真的是个女孩子……</p>
+        <p>如果她没有这么任性这么胡来的话，当年的我降生时恐怕也不会摔坏脑子了。</p>
+        <p>最近她又闹着让我从人界弄几件漂亮衣服来，让爱因斯坦捎给她，这都是什么跟什么啊！又说不用人类自己穿的衣服，她们的小玩意儿也行。</p>
+        <p>没办法了，虽然很对不起欢欢。……为了天神大人，我只好付出你的BJD娃衣，希望你能原谅我……</p>
+    </div>
+
+    <!-- ===== 私密提示 ===== -->
+    <div class="private-notice">
+        <span class="icon">🔒</span>
+        私密内容 无法回复
+    </div>
+
+    <!-- ===== 页码 ===== -->
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn total">共1页</span>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+
+        const container = document.getElementById('container');
+        const body = document.body;
+
+        // ===== 页面加载后渐变为黑白 =====
+        // 使用 requestAnimationFrame 确保渲染完成后再添加类，触发过渡动画
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                body.classList.add('desaturated');
+                container.classList.add('desaturated');
+                console.log('🎨 页面已切换为黑白模式');
+            });
+        });
+
+        console.log('📄 帖子详情页已加载 (12.html)');
+        console.log('👤 楼主：匿名人士');
+        console.log('📌 页面自动渐变为黑白');
+
+    })();
+</script>
+
+</body>
+</html>

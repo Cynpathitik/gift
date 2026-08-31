@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 24px 32px;
+        }
+
+        /* ===== 论坛名 ===== */
+        .forum-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 1px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0ece6;
+            text-align: center;
+        }
+
+        /* ===== 搜索框 ===== */
+        .search-section {
+            padding: 18px 0 14px 0;
+            border-bottom: 2px solid #f0ece6;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f2ed;
+            border-radius: 24px;
+            padding: 4px 6px 4px 18px;
+            border: 2px solid #e3ddd4;
+            transition: border 0.2s;
+            max-width: 100%;
+        }
+
+        .search-box:focus-within {
+            border-color: #b8a99a;
+            background: #faf8f5;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 4px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            color: #1f1f1f;
+            outline: none;
+            min-width: 60px;
+        }
+
+        .search-box input::placeholder {
+            color: #b8b0a4;
+            font-size: 13px;
+        }
+
+        .search-box button {
+            background: #d4c8ba;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+            letter-spacing: 0.5px;
+        }
+
+        .search-box button:hover {
+            background: #c4b6a6;
+        }
+
+        /* ===== 搜索结果区域 ===== */
+        .result-section {
+            padding: 18px 0 6px 0;
+            min-height: 200px;
+        }
+
+        .result-status {
+            font-size: 15px;
+            color: #5a554a;
+            padding: 8px 0 16px 0;
+            border-bottom: 1px solid #f2eee8;
+        }
+
+        .result-status .count {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f5f2ed;
+            padding: 0 10px;
+            border-radius: 12px;
+        }
+
+        .result-status .keyword {
+            font-weight: bold;
+            color: #d4a05a;
+            background: #fcf8f0;
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+
+        /* ===== 结果列表 ===== */
+        .result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 10px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f2eee8;
+            border-radius: 6px;
+            transition: background 0.1s ease;
+            cursor: pointer;
+        }
+
+        .result-item:hover {
+            background: #f8f6f2;
+        }
+
+        .result-item .result-dot {
+            color: #cdc4b8;
+            font-size: 18px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            user-select: none;
+        }
+
+        .result-item .result-title {
+            font-size: 15px;
+            color: #1f1f1f;
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .result-item .result-title .highlight-keyword {
+            font-weight: bold;
+            color: #d4a05a;
+            background: #fcf8f0;
+            padding: 0 4px;
+            border-radius: 3px;
+        }
+
+        /* ===== 无结果状态 ===== */
+        .no-result {
+            text-align: center;
+            padding: 50px 20px 40px 20px;
+            color: #b0a89c;
+            font-size: 16px;
+        }
+
+        .no-result .icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .forum-name {
+                font-size: 20px;
+                padding-bottom: 12px;
+            }
+            .search-box {
+                padding: 3px 4px 3px 14px;
+            }
+            .search-box input {
+                font-size: 13px;
+                padding: 8px 4px;
+            }
+            .search-box button {
+                font-size: 13px;
+                padding: 6px 14px;
+            }
+            .result-status {
+                font-size: 14px;
+            }
+            .result-item {
+                padding: 12px 10px;
+            }
+            .result-item .result-title {
+                font-size: 14px;
+            }
+            .no-result {
+                font-size: 14px;
+                padding: 40px 16px 30px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .forum-name {
+                font-size: 17px;
+            }
+            .search-box input {
+                font-size: 12px;
+            }
+            .search-box button {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            .result-item .result-title {
+                font-size: 13px;
+            }
+            .no-result {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 论坛名（无emoji） ===== -->
+    <div class="forum-name">唐岛能源大学</div>
+
+    <!-- ===== 搜索框 ===== -->
+    <div class="search-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索帖子、成员……" autocomplete="off">
+            <button id="searchBtn">搜索</button>
+        </div>
+    </div>
+
+    <!-- ===== 搜索结果区域 ===== -->
+    <div class="result-section" id="resultSection">
+        <!-- 由 JavaScript 动态渲染 -->
+    </div>
+
+</div>
+
+<script>
+    (function() {
+
+        // ============================================================
+        //  1. 关键词与结果映射
+        // ============================================================
+        const keywordMap = {
+            '破解版': {
+                title: '我得到了东山校园破解版',
+                link: '4.html'
+            },
+            '元小牛': {
+                title: '谁有元小牛的联系方式 能不能私我一下',
+                link: '5.html'
+            },
+            '生日': {
+                title: '喜欢的人生日快到了',
+                link: '6.html'
+            },
+            '魔法少女': {
+                title: '怎么在南堂那块看见有人做奇怪的仪式',
+                link: '7.html'
+            },
+            '物理': {
+                title: '大物要挂科了怎么办急急急',
+                link: '8.html'
+            },
+            '爱因斯坦': {
+                title: '科普：爱因斯坦与相对论',
+                link: '9.html'
+            }
+        };
+
+        // 关键词列表（用于匹配）
+        const keywords = Object.keys(keywordMap);
+
+        // ============================================================
+        //  2. DOM 引用
+        // ============================================================
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultSection = document.getElementById('resultSection');
+
+        // ============================================================
+        //  3. 从 URL 参数读取初始关键词
+        // ============================================================
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // ============================================================
+        //  4. 渲染搜索结果
+        // ============================================================
+        function renderResults(query) {
+            if (!query || query.trim() === '') {
+                // 空搜索 → 显示提示
+                resultSection.innerHTML = `
+                    <div class="no-result">
+                        <span class="icon">🔎</span>
+                        输入关键词开始搜索
+                    </div>
+                `;
+                return;
+            }
+
+            const trimmed = query.trim();
+
+            // 检查是否匹配关键词（精确匹配）
+            const matchedKeyword = keywords.find(kw => kw === trimmed);
+
+            if (!matchedKeyword) {
+                // ❌ 没有匹配结果
+                resultSection.innerHTML = `
+                    <div class="no-result">
+                        <span class="icon">😕</span>
+                        没有搜索到结果，换个内容试试吧
+                    </div>
+                `;
+                return;
+            }
+
+            // ✅ 匹配成功 → 显示 1 个结果
+            const result = keywordMap[matchedKeyword];
+            // 高亮关键词（标题中可能包含）
+            const highlightedTitle = result.title.replace(
+                new RegExp(matchedKeyword, 'g'),
+                `<span class="highlight-keyword">${matchedKeyword}</span>`
+            );
+
+            resultSection.innerHTML = `
+                <div class="result-status">
+                    发现 <span class="count">1</span> 个结果
+                </div>
+                <div class="result-list">
+                    <div class="result-item" data-link="${result.link}">
+                        <span class="result-dot">·</span>
+                        <span class="result-title">${highlightedTitle}</span>
+                    </div>
+                </div>
+            `;
+
+            // 绑定点击跳转
+            const resultItem = resultSection.querySelector('.result-item');
+            if (resultItem) {
+                resultItem.addEventListener('click', function() {
+                    const link = this.dataset.link;
+                    if (link) {
+                        window.location.href = link;
+                        console.log(`📍 跳转到：${link}`);
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        //  5. 执行搜索（跳转到 result.com 并带上参数）
+        // ============================================================
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query === '') {
+                // 空搜索不跳转，直接在当前页显示提示
+                renderResults('');
+                return;
+            }
+
+            // 跳转到 result.com 并带上搜索参数
+            const currentUrl = window.location.href.split('?')[0];
+            const newUrl = currentUrl + '?q=' + encodeURIComponent(query);
+            window.location.href = newUrl;
+        }
+
+        // ============================================================
+        //  6. 初始化：从 URL 读取参数并渲染
+        // ============================================================
+        function init() {
+            const query = getQueryParam('q');
+            if (query !== null && query !== '') {
+                searchInput.value = query;
+                renderResults(query);
+            } else {
+                renderResults('');
+            }
+        }
+
+        // ============================================================
+        //  7. 绑定事件
+        // ============================================================
+        searchBtn.addEventListener('click', performSearch);
+
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // ============================================================
+        //  8. 启动
+        // ============================================================
+        init();
+
+        console.log('🔍 搜索结果页已加载 (result.html)');
+        console.log('📌 关键词列表:', keywords.join('、'));
+        console.log('🔗 匹配结果将跳转到 4.html ~ 9.html');
+
+    })();
+</script>
+
+</body>
+</html>

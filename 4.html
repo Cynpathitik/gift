@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我得到了东山校园破解版 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .op-info .op-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ===== 截图样式（放大） ===== */
+        .screenshot-box {
+            margin: 14px 0 6px 0;
+            border: 2px solid #c4b8aa;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fcfaf7;
+            display: inline-block;
+            max-width: 100%;
+            min-width: 85%;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .screenshot-box .file-header {
+            background: #e0dad2;
+            padding: 8px 18px;
+            font-size: 14px;
+            color: #3d3a35;
+            border-bottom: 2px solid #c4b8aa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            letter-spacing: 0.3px;
+        }
+
+        .screenshot-box .file-header .file-icon {
+            font-size: 18px;
+        }
+
+        .screenshot-box .file-header .file-path {
+            color: #6a655e;
+            font-size: 12px;
+            margin-left: auto;
+            background: #ece8e0;
+            padding: 0 12px;
+            border-radius: 4px;
+        }
+
+        .screenshot-box .file-content {
+            padding: 18px 22px;
+            font-family: 'Courier New', 'SimSun', monospace;
+            font-size: 16px;
+            line-height: 2.2;
+            color: #2a2a2a;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: #fcfaf7;
+            letter-spacing: 0.5px;
+            min-height: 120px;
+        }
+
+        .screenshot-box .file-content .garbled {
+            font-weight: normal;
+            display: block;
+        }
+
+        .screenshot-box .file-content .garbled-1 { color: #5a4a3a; }
+        .screenshot-box .file-content .garbled-2 { color: #4a4a5a; }
+        .screenshot-box .file-content .garbled-3 { color: #3a5a4a; }
+        .screenshot-box .file-content .garbled-4 { color: #5a3a4a; }
+        .screenshot-box .file-content .garbled-5 { color: #4a5a3a; }
+
+        .reply-item {
+            display: flex;
+            flex-direction: column;
+            padding: 14px 0;
+            border-bottom: 1px solid #f2eee8;
+        }
+
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+
+        .reply-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f1f1f;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .reply-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .reply-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        .reply-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 2px;
+            font-size: 12px;
+            color: #b0a89c;
+        }
+
+        .reply-meta .floor {
+            color: #c4b8aa;
+        }
+
+        .reply-content {
+            font-size: 15px;
+            color: #2a2a2a;
+            line-height: 1.8;
+            margin-top: 6px;
+            padding-left: 2px;
+        }
+
+        .reply-content .highlight {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f0ece6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.total) {
+            background: #faf8f5;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .reply-content {
+                font-size: 14px;
+            }
+            .screenshot-box {
+                min-width: 100%;
+            }
+            .screenshot-box .file-content {
+                font-size: 14px;
+                padding: 14px 16px;
+                min-height: 100px;
+            }
+            .screenshot-box .file-header {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .screenshot-box .file-header .file-path {
+                font-size: 10px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .reply-content {
+                font-size: 13px;
+            }
+            .screenshot-box .file-content {
+                font-size: 12px;
+                padding: 10px 12px;
+                min-height: 80px;
+                line-height: 1.9;
+            }
+            .screenshot-box .file-header {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='2.html'">返回论坛</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">我得到了东山校园破解版</div>
+
+    <!-- ===== 楼主信息 ===== -->
+    <div class="op-info">
+        <span class="op-name">楼主 · Zzz</span>
+        <span class="op-time">2026年8月13日</span>
+    </div>
+
+    <!-- ===== 楼主发言 ===== -->
+    <div class="op-content">
+        <p>我发现这个东山校园的代码文件打开都是乱码，程序是怎么运行的？</p>
+        
+        <!-- 截图：模拟 dongshanxiaoyuan.txt 文件窗口（放大，5行乱码） -->
+        <div class="screenshot-box">
+            <div class="file-header">
+                <span class="file-icon">📄</span>
+                dongshanxiaoyuan.txt — 记事本
+                <span class="file-path">C:\Users\Zzz\Desktop\</span>
+            </div>
+            <div class="file-content">
+                <span class="garbled garbled-1">䷻䷼䷽䷾䷿𠀀𠀁𠀂𠀃𠀄𠀅𠀆𠀇𠀈𠀉𠀊𠀋𠀌𠀍𠀎𠀏𠀐𠀑𠀒𠀓𠀔𠀕𠀖𠀗𠀘𠀙𠀚</span>
+                <span class="garbled garbled-2">𠀛𠀜𠀝𠀞𠀟𠀠𠀡𠀢𠀣𠀤𠀥𠀦𠀧𠀨𠀩𠀪𠀫𠀬𠀭𠀮𠀯𠀰𠀱𠀲𠀳𠀴𠀵𠀶𠀷𠀸𠀹𠀺</span>
+                <span class="garbled garbled-3">𠀻𠀼𠀽𠀾𠀿𠁀𠁁𠁂𠁃𠁄𠁅𠁆𠁇𠁈𠁉𠁊𠁋𠁌𠁍𠁎𠁏𠁐𠁑𠁒𠁓𠁔𠁕𠁖𠁗𠁘𠁙𠁚</span>
+                <span class="garbled garbled-4">𠁛𠁜𠁝𠁞𠁟𠁠𠁡𠁢𠁣𠁤𠁥𠁦𠁧𠁨𠁩𠁪𠁫𠁬𠁭𠁮𠁯𠁰𠁱𠁲𠁳𠁴𠁵𠁶𠁷𠁸𠁹𠁺</span>
+                <span class="garbled garbled-5">𠁻𠁼𠁽𠁾𠁿𠂀𠂁𠂂𠂃𠂄𠂅𠂆𠂇𠂈𠂉𠂊𠂋𠂌𠂍𠂎𠂏𠂐𠂑𠂒𠂓𠂔𠂕𠂖𠂗𠂘𠂙𠂚</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 回复列表 ===== -->
+    <div class="replies-section">
+
+        <!-- 1L -->
+        <div class="reply-item">
+            <div class="reply-name">早八睡不醒</div>
+            <div class="reply-meta">
+                <span class="floor">#1</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">？？？这是你自己破解的吗</div>
+        </div>
+
+        <!-- 2L（楼主回复） -->
+        <div class="reply-item">
+            <div class="reply-name">Zzz</div>
+            <div class="reply-meta">
+                <span class="floor">#2</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">对，我是计院的学生，想用这个当期末大作业，结果就这样了</div>
+        </div>
+
+        <!-- 3L -->
+        <div class="reply-item">
+            <div class="reply-name">早八睡不醒</div>
+            <div class="reply-meta">
+                <span class="floor">#3</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">有点掉san……</div>
+        </div>
+
+        <!-- 4L -->
+        <div class="reply-item">
+            <div class="reply-name">木鱼</div>
+            <div class="reply-meta">
+                <span class="floor">#4</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">会不会是你的东山校园中病毒了？</div>
+        </div>
+
+        <!-- 5L（楼主回复） -->
+        <div class="reply-item">
+            <div class="reply-name">Zzz</div>
+            <div class="reply-meta">
+                <span class="floor">#5</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">啊啊啊最好不是吧</div>
+        </div>
+
+        <!-- 6L -->
+        <div class="reply-item">
+            <div class="reply-name">天天掉头发好烦</div>
+            <div class="reply-meta">
+                <span class="floor">#6</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">要不你去找个修手机的问问</div>
+        </div>
+
+        <!-- 7L（元小牛加粗） -->
+        <div class="reply-item">
+            <div class="reply-name">保佑</div>
+            <div class="reply-meta">
+                <span class="floor">#7</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">你有没有听说过<span class="highlight">元小牛</span>有个神人 听说是在那里兼职的研究生 精通编程</div>
+        </div>
+
+        <!-- 8L（楼主回复） -->
+        <div class="reply-item">
+            <div class="reply-name">Zzz</div>
+            <div class="reply-meta">
+                <span class="floor">#8</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">真的假的</div>
+        </div>
+
+        <!-- 9L -->
+        <div class="reply-item">
+            <div class="reply-name">落日飞行</div>
+            <div class="reply-meta">
+                <span class="floor">#9</span>
+                <span>2026年8月13日</span>
+            </div>
+            <div class="reply-content">假的 楼上瞎编的。。。</div>
+        </div>
+
+    </div>
+
+    <!-- ===== 页码（共1页） ===== -->
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn total">共1页</span>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll('.reply-name, .op-name').forEach(el => {
+        el.style.cursor = 'default';
+    });
+
+    console.log('📄 帖子详情页已加载 (4.html)');
+    console.log('👤 楼主：Zzz');
+    console.log('📌 关键词：元小牛（加粗）');
+    console.log('📄 乱码截图：5行，填满窗口');
+    console.log('📄 页码：共1页');
+</script>
+
+</body>
+</html>

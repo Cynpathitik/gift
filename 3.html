@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你能专的校园跑软件又发什么疯？ · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+        }
+
+        /* ===== 返回按钮 ===== */
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        /* ===== 帖子标题 ===== */
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        .post-title .essence-badge {
+            display: inline-block;
+            background: #ffb347;
+            color: #ffffff;
+            font-size: 13px;
+            padding: 1px 12px 2px 10px;
+            border-radius: 14px;
+            font-weight: bold;
+            margin-right: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .post-title .essence-badge::before {
+            content: "⭐ ";
+            font-size: 12px;
+        }
+
+        /* ===== 楼主信息 ===== */
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        /* ===== 楼主发言 ===== */
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ===== 回复列表 ===== */
+        .replies-section {
+            margin-top: 8px;
+        }
+
+        .replies-title {
+            font-size: 13px;
+            color: #b0a89c;
+            padding: 8px 0 12px 0;
+            border-bottom: 1px solid #f0ece6;
+            letter-spacing: 0.5px;
+        }
+
+        .replies-title span {
+            background: #f5f2ed;
+            padding: 2px 14px;
+            border-radius: 20px;
+        }
+
+        .reply-item {
+            display: flex;
+            flex-direction: column;
+            padding: 14px 0;
+            border-bottom: 1px solid #f2eee8;
+        }
+
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== 昵称（悬停出现横杠，但不可点击） ===== */
+        .reply-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f1f1f;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .reply-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #b8a99a;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
+        }
+
+        .reply-name:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* ===== 楼层号 + 时间 ===== */
+        .reply-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 2px;
+            font-size: 12px;
+            color: #b0a89c;
+        }
+
+        .reply-meta .floor {
+            color: #c4b8aa;
+        }
+
+        /* ===== 回复内容 ===== */
+        .reply-content {
+            font-size: 15px;
+            color: #2a2a2a;
+            line-height: 1.8;
+            margin-top: 6px;
+            padding-left: 2px;
+        }
+
+        .reply-content .highlight {
+            font-weight: bold;
+            color: #1a1a1a;
+            background: #f0ece6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        /* ===== 页码（共6页，不可翻页） ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.ellipsis {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            min-width: 20px;
+            padding: 0 4px;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.ellipsis):not(.total) {
+            background: #faf8f5;
+        }
+
+        /* ===== 底部输入框 ===== */
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .post-title .essence-badge {
+                font-size: 11px;
+                padding: 0 10px 1px 8px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .reply-content {
+                font-size: 14px;
+            }
+            .reply-name {
+                font-size: 13px;
+            }
+            .pagination {
+                gap: 5px;
+                padding: 14px 0 2px 0;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .reply-content {
+                font-size: 13px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='2.html'">返回首页</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">
+        <span class="essence-badge">精华</span>
+        你能专的校园跑软件又发什么疯？
+    </div>
+
+    <!-- ===== 楼主信息 ===== -->
+    <div class="op-info">
+        <span class="op-name">楼主 · 奔跑</span>
+        <span class="op-time">2026年9月1日</span>
+    </div>
+
+    <!-- ===== 楼主发言 ===== -->
+    <div class="op-content">
+        新的打卡点都是一些没跑过的地方，舞龙场轮滑场也就算了，找了半天求索园在哪，最后发现还是图书馆那片。无语了。。。
+    </div>
+
+    <!-- ===== 回复列表 ===== -->
+    <div class="replies-section">
+        <div class="replies-title"><span>全部回复 · 共 9 条</span></div>
+
+        <!-- 2L -->
+        <div class="reply-item">
+            <div class="reply-name">MyWay</div>
+            <div class="reply-meta">
+                <span class="floor">#2</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">真的假的你别吓我 我还没返校</div>
+        </div>
+
+        <!-- 3L -->
+        <div class="reply-item">
+            <div class="reply-name">情深不知</div>
+            <div class="reply-meta">
+                <span class="floor">#3</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">楼上你咋了不是没开学吗</div>
+        </div>
+
+        <!-- 4L -->
+        <div class="reply-item">
+            <div class="reply-name">哈哈哈</div>
+            <div class="reply-meta">
+                <span class="floor">#4</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">我点进去也只有学期阳光跑还未开始啊</div>
+        </div>
+
+        <!-- 5L -->
+        <div class="reply-item">
+            <div class="reply-name">OvO</div>
+            <div class="reply-meta">
+                <span class="floor">#5</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">楼主什么都不回复是什么意思</div>
+        </div>
+
+        <!-- 6L -->
+        <div class="reply-item">
+            <div class="reply-name">111</div>
+            <div class="reply-meta">
+                <span class="floor">#6</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">谁@管理员踢一下</div>
+        </div>
+
+        <!-- 7L -->
+        <div class="reply-item">
+            <div class="reply-name">豆子</div>
+            <div class="reply-meta">
+                <span class="floor">#7</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">他不是演的 我的打开也能跑步 但是多了一个VIP通道</div>
+        </div>
+
+        <!-- 8L（破解版加粗） -->
+        <div class="reply-item">
+            <div class="reply-name">写代码好烦</div>
+            <div class="reply-meta">
+                <span class="floor">#8</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">我刚刚好像看见有另一个帖子把东山校园<span class="highlight">破解版</span>做出来了，你们快去搜搜看</div>
+        </div>
+
+        <!-- 9L -->
+        <div class="reply-item">
+            <div class="reply-name">圆</div>
+            <div class="reply-meta">
+                <span class="floor">#9</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">这不是全东山省都在用的吗，之前一堆bug就算了，怎么可能有什么VIP？</div>
+        </div>
+
+        <!-- 10L -->
+        <div class="reply-item">
+            <div class="reply-name">梦想</div>
+            <div class="reply-meta">
+                <span class="floor">#10</span>
+                <span>2026年9月1日</span>
+            </div>
+            <div class="reply-content">好诡异啊</div>
+        </div>
+    </div>
+
+    <!-- ===== 页码（共6页，不可翻页） ===== -->
+    <div class="pagination">
+        <span class="page-btn active">1</span>
+        <span class="page-btn">2</span>
+        <span class="page-btn">3</span>
+        <span class="page-btn">4</span>
+        <span class="page-btn">5</span>
+        <span class="page-btn">6</span>
+        <span class="page-btn total">共6页</span>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    // 所有昵称不可点击（只保留悬停横杠效果）
+    document.querySelectorAll('.reply-name').forEach(el => {
+        el.style.cursor = 'default';
+    });
+
+    console.log('📄 帖子详情页已加载');
+    console.log('👤 昵称悬停显示横杠，但不可点击');
+    console.log('📌 共10层楼，页码1-6页（不可翻页）');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喜欢的人生日快到了 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px;
+            transition: background-color 1.5s ease, filter 1.5s ease;
+        }
+
+        /* ===== 黑白滤镜（解锁后渐变） ===== */
+        body.desaturated {
+            background: #b0b0b0;
+            filter: grayscale(100%);
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+            transition: background-color 1.5s ease, filter 1.5s ease;
+        }
+
+        .container.desaturated {
+            background: #d0d0d0;
+            filter: grayscale(100%);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .post-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            line-height: 1.5;
+        }
+
+        /* ===== 弹窗遮罩 ===== */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .overlay .modal-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 36px 40px 32px 40px;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid #d4c8ba;
+            transition: transform 0.4s ease;
+        }
+
+        .overlay .modal-box .lock-icon {
+            font-size: 44px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .overlay .modal-box .prompt {
+            font-size: 18px;
+            color: #2a2a2a;
+            line-height: 2.2;
+            margin-bottom: 20px;
+        }
+
+        .overlay .modal-box .prompt .bold {
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .overlay .modal-box .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .overlay .modal-box .input-row input {
+            padding: 10px 16px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            border: 2px solid #ddd6cc;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f1f1f;
+            outline: none;
+            width: 180px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .overlay .modal-box .input-row input:focus {
+            border-color: #b8a99a;
+        }
+
+        .overlay .modal-box .input-row input::placeholder {
+            color: #c4b8aa;
+            font-size: 13px;
+        }
+
+        .overlay .modal-box .input-row button {
+            padding: 10px 28px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            background: #d4c8ba;
+            border: 2px solid #c4b6a6;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .overlay .modal-box .input-row button:hover {
+            background: #c4b6a6;
+        }
+
+        .overlay .modal-box .error-msg {
+            color: #d46060;
+            font-size: 13px;
+            margin-top: 14px;
+            min-height: 24px;
+        }
+
+        /* ===== 帖子内容（默认被遮挡，解锁后显示） ===== */
+        .post-content-wrapper {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .post-content-wrapper.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .op-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0 8px 0;
+            font-size: 14px;
+            color: #7a7a7a;
+        }
+
+        .op-info .op-name {
+            color: #1f1f1f;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: default;
+            display: inline-block;
+            width: fit-content;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .op-info .op-name::before {
+            content: "👤 ";
+            font-size: 13px;
+        }
+
+        .op-info .op-time {
+            color: #b0a89c;
+            font-size: 13px;
+        }
+
+        .op-content {
+            background: #f8f6f2;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 6px 0 20px 0;
+            border-left: 4px solid #d4c8ba;
+            color: #2a2a2a;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        /* ===== 私密提示 ===== */
+        .private-notice {
+            text-align: center;
+            padding: 20px 0 12px 0;
+            color: #a0a0a0;
+            font-size: 14px;
+            border-top: 2px solid #f0ece6;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .private-notice .icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.5;
+        }
+
+        /* ===== 页码 ===== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 0 4px 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            border: 2px solid #ddd6cc;
+            background: #ffffff;
+            color: #5a554a;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            cursor: default;
+            user-select: none;
+            border-radius: 4px;
+        }
+
+        .page-btn.active {
+            background: #d4c8ba;
+            border-color: #c4b6a6;
+            color: #ffffff;
+        }
+
+        .page-btn.total {
+            border-color: transparent;
+            background: transparent;
+            color: #b0a89c;
+            font-size: 13px;
+            min-width: auto;
+            padding: 0 6px;
+        }
+
+        .page-btn:not(.active):not(.total) {
+            background: #faf8f5;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 4px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .post-title {
+                font-size: 17px;
+            }
+            .overlay .modal-box {
+                padding: 28px 20px 26px 20px;
+            }
+            .overlay .modal-box .prompt {
+                font-size: 16px;
+            }
+            .overlay .modal-box .input-row input {
+                width: 140px;
+                font-size: 14px;
+            }
+            .op-content {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+            .page-btn {
+                min-width: 30px;
+                height: 30px;
+                font-size: 12px;
+                padding: 0 6px;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .post-title {
+                font-size: 15px;
+            }
+            .overlay .modal-box .prompt {
+                font-size: 14px;
+            }
+            .overlay .modal-box .input-row input {
+                width: 110px;
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+            .overlay .modal-box .input-row button {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+            .op-content {
+                font-size: 13px;
+                padding: 12px 14px;
+            }
+            .page-btn {
+                min-width: 26px;
+                height: 26px;
+                font-size: 11px;
+                padding: 0 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="container">
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='nameless.html'">返回主页</div>
+
+    <!-- ===== 帖子标题 ===== -->
+    <div class="post-title">喜欢的人生日快到了</div>
+
+    <!-- ===== 帖子内容（默认隐藏，解锁后显示） ===== -->
+    <div class="post-content-wrapper" id="postContent">
+        <div class="op-info">
+            <span class="op-name">楼主 · 匿名人士</span>
+            <span class="op-time">2026年8月6日</span>
+        </div>
+        <div class="op-content">
+            好吧其实就是明天 但是她睡得太早 我起得太晚 怎么才能好好地祝她生日快乐呢...
+        </div>
+
+        <!-- ===== 私密提示 ===== -->
+        <div class="private-notice">
+            <span class="icon">🔒</span>
+            私密内容 无法回复
+        </div>
+
+        <!-- ===== 页码 ===== -->
+        <div class="pagination">
+            <span class="page-btn active">1</span>
+            <span class="page-btn total">共1页</span>
+        </div>
+
+        <!-- ===== 底部输入框 ===== -->
+        <div class="footer-input">
+            <div class="input-placeholder">说点什么……</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 弹窗遮罩 ===== -->
+<div class="overlay" id="overlay">
+    <div class="modal-box">
+        <span class="lock-icon">🔐</span>
+        <div class="prompt">
+            <span class="bold">我</span>的愿望是什么？
+        </div>
+        <div class="input-row">
+            <input type="text" id="wishInput" placeholder="输入答案..." autocomplete="off">
+            <button id="confirmBtn">确认</button>
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+</div>
+
+<script>
+    (function() {
+
+        const overlay = document.getElementById('overlay');
+        const wishInput = document.getElementById('wishInput');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const postContent = document.getElementById('postContent');
+        const container = document.getElementById('container');
+        const body = document.body;
+
+        const CORRECT_ANSWER = '幸福';
+
+        function verifyWish() {
+            const input = wishInput.value.trim();
+
+            if (input === '') {
+                errorMsg.textContent = '⚠️ 请输入答案';
+                return;
+            }
+
+            if (input === CORRECT_ANSWER) {
+                // ✅ 正确：解锁内容
+                overlay.classList.add('hidden');
+
+                // 显示帖子内容（渐入）
+                postContent.classList.add('visible');
+
+                // 页面渐变为黑白
+                body.classList.add('desaturated');
+                container.classList.add('desaturated');
+
+                errorMsg.textContent = '';
+                console.log('🔓 愿望验证成功，帖子内容已解锁');
+                console.log('🎨 页面已切换为黑白模式');
+            } else {
+                // ❌ 错误
+                errorMsg.textContent = '❌ 答案不正确，请再想想...';
+                wishInput.value = '';
+                wishInput.focus();
+            }
+        }
+
+        confirmBtn.addEventListener('click', verifyWish);
+
+        wishInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                verifyWish();
+            }
+        });
+
+        wishInput.focus();
+
+        console.log('📄 帖子已加载 (6.html)');
+        console.log('🔐 密保问题：我的愿望是什么？');
+        console.log('✅ 正确答案：幸福');
+        console.log('🎨 解锁后页面将渐变为黑白');
+
+    })();
+</script>
+
+</body>
+</html>

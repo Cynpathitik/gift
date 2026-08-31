@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匿名人士的主页 · 唐岛能源大学</title>
+    
+    <style>
+        @font-face {
+            font-family: 'HanYiPixel';
+            src: url('fonts/HYPixel11pxU-2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #e8e3db;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #1f1f1f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 780px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 20px 32px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #7a7a7a;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px 0 14px 0;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.15s;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            border-bottom-color: #b8a99a;
+        }
+
+        .back-link::before {
+            content: "← ";
+        }
+
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 20px 20px 20px;
+            background: #f8f6f2;
+            border-radius: 16px;
+            border: 2px solid #e8e3db;
+            margin-bottom: 24px;
+        }
+
+        .profile-card .avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid #d4c8ba;
+            flex-shrink: 0;
+            background-image: url('cake.jpg');
+            background-size: cover;
+            background-position: center;
+            background-color: #e8e3db;
+        }
+
+        .profile-card .info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-card .info .name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-card .info .bio {
+            font-size: 13px;
+            color: #b0a89c;
+            letter-spacing: 0.3px;
+        }
+
+        .profile-card .info .bio .lock {
+            color: #8a7a6a;
+        }
+
+        .private-overlay {
+            padding: 30px 20px 40px 20px;
+            text-align: center;
+            border: 2px dashed #d4c8ba;
+            border-radius: 16px;
+            background: #fcfaf7;
+            margin-bottom: 10px;
+        }
+
+        .private-overlay .lock-icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .private-overlay .prompt {
+            font-size: 16px;
+            color: #3a3a3a;
+            line-height: 2.2;
+            margin-bottom: 18px;
+        }
+
+        .private-overlay .prompt .bold {
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .private-overlay .input-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .private-overlay .input-row input {
+            padding: 10px 16px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            border: 2px solid #ddd6cc;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f1f1f;
+            outline: none;
+            width: 200px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+
+        .private-overlay .input-row input:focus {
+            border-color: #b8a99a;
+        }
+
+        .private-overlay .input-row input::placeholder {
+            color: #c4b8aa;
+            font-size: 13px;
+        }
+
+        .private-overlay .input-row button {
+            padding: 10px 24px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            background: #d4c8ba;
+            border: 2px solid #c4b6a6;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .private-overlay .input-row button:hover {
+            background: #c4b6a6;
+        }
+
+        .private-overlay .error-msg {
+            color: #d46060;
+            font-size: 13px;
+            margin-top: 14px;
+            min-height: 24px;
+        }
+
+        .post-section {
+            display: none;
+        }
+
+        .post-section.visible {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: #7a7a7a;
+            padding: 6px 0 12px 0;
+            border-bottom: 2px solid #f0ece6;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .count {
+            background: #f0ece6;
+            padding: 0 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #5a554a;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 8px;
+        }
+
+        .post-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid #f2eee8;
+            border-radius: 6px;
+            transition: background 0.1s ease;
+            cursor: pointer;
+        }
+
+        .post-item:hover {
+            background: #f8f6f2;
+        }
+
+        .post-item .post-dot {
+            color: #cdc4b8;
+            font-size: 16px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            user-select: none;
+        }
+
+        .post-item .post-title {
+            font-size: 15px;
+            color: #1f1f1f;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .post-item .post-title:hover {
+            color: #6a5a4a;
+        }
+
+        .post-item .post-time {
+            font-size: 12px;
+            color: #b0a89c;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .footer-input {
+            padding: 14px 0 0 0;
+            border-top: 2px solid #f0ece6;
+            margin-top: 16px;
+        }
+
+        .input-placeholder {
+            width: 100%;
+            padding: 14px 20px;
+            background: #f5f2ed;
+            border-radius: 30px;
+            color: #b0a89c;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: not-allowed;
+            user-select: none;
+            border: 1px solid #e3ddd4;
+            text-align: left;
+        }
+
+        .input-placeholder::before {
+            content: "✏️ ";
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 10px;
+            }
+            .container {
+                padding: 18px 16px 16px 16px;
+                border-radius: 18px;
+            }
+            .profile-card {
+                padding: 14px 16px 16px 16px;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
+            .profile-card .avatar {
+                width: 60px;
+                height: 60px;
+            }
+            .profile-card .info .name {
+                font-size: 17px;
+            }
+            .private-overlay .prompt {
+                font-size: 14px;
+            }
+            .private-overlay .input-row input {
+                width: 160px;
+                font-size: 14px;
+            }
+            .post-item {
+                padding: 12px 10px;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .post-item .post-title {
+                font-size: 14px;
+            }
+            .post-item .post-time {
+                font-size: 11px;
+                margin-left: auto;
+            }
+            .input-placeholder {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .profile-card .avatar {
+                width: 50px;
+                height: 50px;
+            }
+            .profile-card .info .name {
+                font-size: 15px;
+            }
+            .private-overlay .prompt {
+                font-size: 13px;
+            }
+            .private-overlay .input-row input {
+                width: 130px;
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            .private-overlay .input-row button {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+            .post-item .post-title {
+                font-size: 13px;
+            }
+            .post-item .post-time {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- ===== 返回按钮 ===== -->
+    <div class="back-link" onclick="window.location.href='7.html'">返回帖子</div>
+
+    <!-- ===== 资料卡 ===== -->
+    <div class="profile-card">
+        <div class="avatar"></div>
+        <div class="info">
+            <div class="name">匿名人士</div>
+            <div class="bio">
+                <span class="lock">🔒</span> 该账号为私密账号
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 密保验证区 ===== -->
+    <div class="private-overlay" id="privateOverlay">
+        <span class="lock-icon">🔐</span>
+        <div class="prompt">
+            该账号为私密账号 请回答密保问题：<br>
+            <span class="bold">你</span>的生日是？
+        </div>
+        <div class="input-row">
+            <input type="text" id="securityInput" placeholder="请输入八位数字" maxlength="8" autocomplete="off">
+            <button id="confirmBtn">确认</button>
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <!-- ===== 发帖记录 ===== -->
+    <div class="post-section" id="postSection">
+        <div class="section-title">
+            📝 发帖记录
+            <span class="count">5</span>
+        </div>
+
+        <div class="post-list">
+            <div class="post-item" data-link="12.html">
+                <span class="post-dot">·</span>
+                <span class="post-title">既然这样就进献吧</span>
+                <span class="post-time">2026.9.1</span>
+            </div>
+
+            <div class="post-item" data-link="13.html">
+                <span class="post-dot">·</span>
+                <span class="post-title">好痛苦 到底什么时候才会变得幸福呢</span>
+                <span class="post-time">2026.8.24</span>
+            </div>
+
+            <div class="post-item" data-link="6.html">
+                <span class="post-dot">·</span>
+                <span class="post-title">喜欢的人的生日快到了</span>
+                <span class="post-time">2026.8.6</span>
+            </div>
+
+            <div class="post-item" data-link="14.html">
+                <span class="post-dot">·</span>
+                <span class="post-title">突然又想起来很多年前的事情了</span>
+                <span class="post-time">2026.6.6</span>
+            </div>
+
+            <div class="post-item" data-link="15.html">
+                <span class="post-dot">·</span>
+                <span class="post-title">日记</span>
+                <span class="post-time">2026.5.9</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 底部输入框 ===== -->
+    <div class="footer-input">
+        <div class="input-placeholder">说点什么……</div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+
+        const securityInput = document.getElementById('securityInput');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const privateOverlay = document.getElementById('privateOverlay');
+        const postSection = document.getElementById('postSection');
+
+        const CORRECT_ANSWER = '20070807';
+        const STORAGE_KEY = 'nameless_unlocked';
+
+        // ============================================================
+        //  检查是否已经解锁（使用 sessionStorage）
+        // ============================================================
+        function isUnlocked() {
+            return sessionStorage.getItem(STORAGE_KEY) === 'true';
+        }
+
+        // ============================================================
+        //  解锁主页
+        // ============================================================
+        function unlockPage() {
+            privateOverlay.style.display = 'none';
+            postSection.classList.add('visible');
+            sessionStorage.setItem(STORAGE_KEY, 'true');
+            console.log('🔓 密保验证成功，发帖记录已解锁 (sessionStorage 已记录)');
+        }
+
+        // ============================================================
+        //  如果已经解锁，直接显示内容
+        // ============================================================
+        if (isUnlocked()) {
+            unlockPage();
+            console.log('🔓 检测到已解锁状态，自动显示发帖记录');
+        }
+
+        // ============================================================
+        //  验证函数
+        // ============================================================
+        function verifyAnswer() {
+            const input = securityInput.value.trim();
+
+            if (input === '') {
+                errorMsg.textContent = '⚠️ 请输入答案';
+                return;
+            }
+
+            if (!/^\d{8}$/.test(input)) {
+                errorMsg.textContent = '回答错误！请检查答案是否为八位数字';
+                return;
+            }
+
+            if (input === CORRECT_ANSWER) {
+                unlockPage();
+                errorMsg.textContent = '';
+            } else {
+                errorMsg.textContent = '回答错误！请检查答案是否为八位数字';
+                securityInput.value = '';
+                securityInput.focus();
+            }
+        }
+
+        // ============================================================
+        //  绑定事件
+        // ============================================================
+        confirmBtn.addEventListener('click', verifyAnswer);
+
+        securityInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                verifyAnswer();
+            }
+        });
+
+        // 如果尚未解锁，自动聚焦输入框
+        if (!isUnlocked()) {
+            securityInput.focus();
+        }
+
+        // ============================================================
+        //  帖子点击跳转
+        // ============================================================
+        document.querySelectorAll('.post-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const link = this.dataset.link;
+                if (link) {
+                    window.location.href = link;
+                    console.log(`📍 跳转到：${link}`);
+                }
+            });
+        });
+
+        console.log('👤 匿名人士主页已加载 (nameless.html)');
+        console.log('🔐 密保问题：你的生日是？');
+        console.log('✅ 正确答案：20070807');
+        console.log('📌 验证通过后使用 sessionStorage 保持解锁状态');
+        console.log('📌 在同一个浏览器会话中，返回主页无需重新输入密码');
+
+    })();
+</script>
+
+</body>
+</html>

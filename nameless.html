@@ -292,6 +292,70 @@
             opacity: 0.6;
         }
 
+        /* ===== 欢迎弹窗 ===== */
+        .welcome-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-overlay.show {
+            display: flex;
+        }
+
+        .welcome-box {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 36px 40px 32px 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #ffb8c8;
+        }
+
+        .welcome-box .welcome-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .welcome-box .welcome-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .welcome-box .welcome-desc {
+            font-size: 15px;
+            color: #5a5a5a;
+            line-height: 1.8;
+            margin-bottom: 18px;
+        }
+
+        .welcome-box button {
+            padding: 10px 32px;
+            font-family: 'HanYiPixel', 'Courier New', monospace;
+            font-size: 15px;
+            background: #ffb8c8;
+            border: 2px solid #e8a0b0;
+            border-radius: 8px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .welcome-box button:hover {
+            background: #f0a8b8;
+        }
+
         @media (max-width: 640px) {
             body {
                 padding: 16px 10px;
@@ -335,6 +399,9 @@
                 font-size: 13px;
                 padding: 12px 16px;
             }
+            .welcome-box {
+                padding: 28px 24px 24px 24px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -363,6 +430,9 @@
             .post-item .post-time {
                 font-size: 10px;
             }
+            .welcome-box .welcome-title {
+                font-size: 17px;
+            }
         }
     </style>
 </head>
@@ -371,7 +441,7 @@
 <div class="container">
 
     <!-- ===== 返回按钮 ===== -->
-    <div class="back-link" onclick="window.location.href='11.html'">返回帖子</div>
+    <div class="back-link" onclick="history.back()">返回上一页</div>
 
     <!-- ===== 资料卡 ===== -->
     <div class="profile-card">
@@ -445,6 +515,16 @@
 
 </div>
 
+<!-- ===== 欢迎弹窗 ===== -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-box">
+        <span class="welcome-icon">🎉</span>
+        <div class="welcome-title">棚棚！欢迎你来！</div>
+        <div class="welcome-desc">终于等到你啦 ✨</div>
+        <button id="welcomeBtn">开心！</button>
+    </div>
+</div>
+
 <script>
     (function() {
 
@@ -453,12 +533,17 @@
         const errorMsg = document.getElementById('errorMsg');
         const privateOverlay = document.getElementById('privateOverlay');
         const postSection = document.getElementById('postSection');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const welcomeBtn = document.getElementById('welcomeBtn');
 
         const CORRECT_ANSWER = '20070807';
+        const SPECIAL_ANSWER = '20070527';
         const STORAGE_KEY = 'nameless_unlocked';
 
+        let isWelcomeShown = false;
+
         // ============================================================
-        //  检查是否已经解锁（使用 sessionStorage）
+        //  检查是否已经解锁
         // ============================================================
         function isUnlocked() {
             return sessionStorage.getItem(STORAGE_KEY) === 'true';
@@ -467,18 +552,27 @@
         // ============================================================
         //  解锁主页
         // ============================================================
-        function unlockPage() {
+        function unlockPage(showWelcome) {
             privateOverlay.style.display = 'none';
             postSection.classList.add('visible');
             sessionStorage.setItem(STORAGE_KEY, 'true');
             console.log('🔓 密保验证成功，发帖记录已解锁 (sessionStorage 已记录)');
+
+            // 如果需要显示欢迎弹窗
+            if (showWelcome && !isWelcomeShown) {
+                setTimeout(() => {
+                    welcomeOverlay.classList.add('show');
+                    isWelcomeShown = true;
+                    console.log('🎉 欢迎弹窗已显示');
+                }, 300);
+            }
         }
 
         // ============================================================
         //  如果已经解锁，直接显示内容
         // ============================================================
         if (isUnlocked()) {
-            unlockPage();
+            unlockPage(false);
             console.log('🔓 检测到已解锁状态，自动显示发帖记录');
         }
 
@@ -499,13 +593,21 @@
             }
 
             if (input === CORRECT_ANSWER) {
-                unlockPage();
+                unlockPage(false);
                 errorMsg.textContent = '';
-            } else {
-                errorMsg.textContent = '回答错误！请检查答案是否为八位数字';
-                securityInput.value = '';
-                securityInput.focus();
+                return;
             }
+
+            if (input === SPECIAL_ANSWER) {
+                unlockPage(true);
+                errorMsg.textContent = '';
+                return;
+            }
+
+            // 错误答案
+            errorMsg.textContent = '回答错误！请检查答案是否为八位数字';
+            securityInput.value = '';
+            securityInput.focus();
         }
 
         // ============================================================
@@ -519,10 +621,24 @@
             }
         });
 
-        // 如果尚未解锁，自动聚焦输入框
         if (!isUnlocked()) {
             securityInput.focus();
         }
+
+        // ============================================================
+        //  欢迎弹窗关闭按钮
+        // ============================================================
+        welcomeBtn.addEventListener('click', function() {
+            welcomeOverlay.classList.remove('show');
+            console.log('👋 欢迎弹窗已关闭');
+        });
+
+        // 点击弹窗背景也可关闭
+        welcomeOverlay.addEventListener('click', function(e) {
+            if (e.target === welcomeOverlay) {
+                welcomeOverlay.classList.remove('show');
+            }
+        });
 
         // ============================================================
         //  帖子点击跳转
@@ -540,8 +656,8 @@
         console.log('👤 匿名人士主页已加载 (nameless.html)');
         console.log('🔐 密保问题：你的生日是？');
         console.log('✅ 正确答案：20070807');
+        console.log('💝 特殊答案：20070527 → 弹窗 "棚棚！欢迎你来！"');
         console.log('📌 验证通过后使用 sessionStorage 保持解锁状态');
-        console.log('📌 在同一个浏览器会话中，返回主页无需重新输入密码');
 
     })();
 </script>
